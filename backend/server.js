@@ -3,6 +3,7 @@ const cors = require("cors");
 const pool = require("./db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { upload, processUpload, previewUpload, getSupportedTables } = require("./file-upload");
 require("dotenv").config();
 
 const app = express();
@@ -734,7 +735,7 @@ app.get("/api/students", authMiddleware, async (req, res) => {
         year_in_school,
         areas_of_interest
       FROM students
-      ORDER BY full_name
+      ORDER BY student_id DESC
     `);
     res.json(result.rows);
   } catch (err) {
@@ -853,7 +854,7 @@ app.get("/api/student-tracker", authMiddleware, async (req, res) => {
       LEFT JOIN schools sch ON p.school_id = sch.school_id
       LEFT JOIN semesters sem ON sp.semester_id = sem.semester_id
       LEFT JOIN staff_contacts sc ON sp.sg4_staff_id = sc.staff_id
-      ORDER BY st.full_name, sem.year DESC
+      ORDER BY sp.participation_id DESC
     `);
     res.json(result.rows);
   } catch (err) {
@@ -1740,6 +1741,106 @@ app.get("/api/v2/dashboard", authMiddleware, async (req, res) => {
       courseImpact: courseImpact.rows[0] || {},
       retention: retention.rows[0] || {},
       milestones: milestones.rows
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// =============================================
+// FILE UPLOAD ENDPOINTS
+// =============================================
+
+// Get list of supported tables for upload
+app.get("/api/upload/tables", authMiddleware, (req, res) => {
+  const tables = getSupportedTables();
+  res.json(tables);
+});
+
+// Preview file before importing (with column detection)
+app.post("/api/upload/preview", authMiddleware, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const targetTable = req.body.targetTable || null;
+    const preview = await previewUpload(req.file.buffer, req.file.originalname, targetTable);
+    
+    res.json(preview);
+  } catch (err) {
+    console.error("Preview error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Import file data to database (admin only)
+app.post("/api/upload/import", authMiddleware, adminMiddleware, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const targetTable = req.body.targetTable || null;
+    const result = await processUpload(
+      req.file.buffer, 
+      req.file.originalname, 
+      targetTable, 
+      req.user.id
+    );
+    
+    // Log the upload activity
+    console.log(`File import by ${req.user.username}:`, {
+      filename: req.file.originalname,
+      imported: result.imported,
+      errors: result.errors.length
+    });
+    
+    res.json(result);
+  } catch (err) {
+    console.error("Import error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Upload with specific table target (admin only)
+app.post("/api/upload/:table", authMiddleware, adminMiddleware, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const targetTable = req.params.table;
+    const supportedTables = getSupportedTables();
+    
+    if (!supportedTables[targetTable]) {
+      return res.status(400).json({ 
+        error: `Unsupported table: ${targetTable}`,
+        supportedTables: Object.keys(supportedTables)
+      });
+    }
+
+    const result = await processUpload(
+      req.file.buffer, 
+      req.file.originalname, 
+      targetTable, 
+      req.user.id
+    );
+    
+    res.json(result);
+  } catch (err) {
+    console.error("Import error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get upload history/logs (admin only)
+app.get("/api/upload/history", authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    // This could be expanded to log uploads to a database table
+    res.json({
+      message: "Upload history feature - logs stored in server console",
+      note: "Consider adding an upload_log table for persistent tracking"
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
