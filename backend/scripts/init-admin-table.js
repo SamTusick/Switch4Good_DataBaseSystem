@@ -1,7 +1,7 @@
 /**
  * One-time setup script to create admin_users table and seed default users
  */
-const pool = require('./db');
+const pool = require('../db');
 const bcrypt = require('bcryptjs');
 
 async function setup() {
@@ -64,3 +64,4 @@ async function setup() {
 }
 
 setup();
+

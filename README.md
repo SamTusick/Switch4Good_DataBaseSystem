@@ -1,77 +1,220 @@
-# React + PostgreSQL Full Stack App
+# Switch4Good Database System
 
-A full-stack application with React frontend and Node.js/Express backend connected to PostgreSQL.
+A full-stack application for managing Switch4Good's educational partnerships, student tracking, and program metrics.
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 project/
-├── backend/           # Express API server
-│   ├── db.js         # PostgreSQL connection
-│   ├── server.js     # API endpoints
-│   ├── .env          # Database credentials (edit this!)
-│   └── init.sql      # SQL to create sample table
+├── backend/                    # Express.js API Server
+│   ├── src/                    # Application source code
+│   │   ├── config/             # Configuration modules
+│   │   │   ├── database.js     # PostgreSQL connection pool
+│   │   │   └── index.js        # Environment config exports
+│   │   ├── middleware/         # Express middleware
+│   │   │   └── auth.js         # JWT authentication & authorization
+│   │   ├── routes/             # API route handlers
+│   │   │   ├── index.js        # Route aggregator
+│   │   │   ├── auth.routes.js  # Login, verify, password change
+│   │   │   ├── admin.routes.js # User management (admin only)
+│   │   │   ├── schools.routes.js
+│   │   │   ├── programs.routes.js
+│   │   │   ├── students.routes.js
+│   │   │   ├── staging.routes.js
+│   │   │   ├── metrics.routes.js
+│   │   │   └── upload.routes.js
+│   │   ├── app.js              # Express app configuration
+│   │   └── server.js           # Server entry point
+│   ├── scripts/                # Database & setup scripts
+│   │   ├── setup-admin.js      # Create admin users
+│   │   ├── run-schema.js       # Apply database schema
+│   │   ├── seed-demo-data.js   # Generate demo data
+│   │   └── test-db.js          # Test database connection
+│   ├── sql/                    # SQL schema files
+│   │   ├── schema-complete.sql # Full database schema
+│   │   └── init.sql            # Initial setup SQL
+│   ├── db.js                   # Legacy database connection
+│   ├── file-upload.js          # File upload processing
+│   ├── .env.example            # Environment template
+│   └── package.json
 │
-└── frontend/         # React application
-    └── src/
-        └── App.jsx   # Main React component
+├── frontend/                   # React + Vite Frontend
+│   ├── src/
+│   │   ├── components/         # Reusable UI components
+│   │   ├── hooks/              # Custom React hooks
+│   │   │   ├── useAuth.js      # Authentication hook
+│   │   │   ├── useApi.js       # API fetching hook
+│   │   │   └── index.js
+│   │   ├── services/           # API service layer
+│   │   │   └── api.js          # Centralized API calls
+│   │   ├── utils/              # Utility functions
+│   │   ├── App.jsx             # Main application component
+│   │   ├── main.jsx            # React entry point
+│   │   └── index.css           # Global styles
+│   ├── vite.config.js
+│   └── package.json
+│
+└── db/                         # Database migrations (legacy)
+    ├── schema.sql
+    └── seed.sql
 ```
 
-## Setup Instructions
+## 🚀 Getting Started
 
-### 1. Configure PostgreSQL in pgAdmin
+### Prerequisites
 
-1. Open **pgAdmin**
-2. Create a new database (or use an existing one)
-3. Open the **Query Tool** and run the contents of `backend/init.sql` to create the sample table
+- Node.js 18+
+- PostgreSQL 14+
+- npm or yarn
 
-### 2. Configure Backend
+### Backend Setup
 
-1. Open `backend/.env` and update with your PostgreSQL credentials:
-
-   ```
-   DB_USER=postgres
-   DB_PASSWORD=your_actual_password
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_NAME=your_database_name
-   ```
-
-2. Install dependencies and start the server:
-
+1. **Navigate to backend:**
    ```bash
    cd backend
-   npm install
-   npm start
    ```
 
-   The API will run on **http://localhost:5000**
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-### 3. Start Frontend
+3. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials
+   ```
 
-1. Open a new terminal and run:
+4. **Set up database:**
+   ```bash
+   npm run db:schema    # Apply schema
+   npm run db:seed      # Add demo data (optional)
+   npm run admin:setup  # Create admin user
+   ```
 
+5. **Start server:**
+   ```bash
+   npm run dev          # Development (with hot reload)
+   npm start            # Production
+   ```
+
+### Frontend Setup
+
+1. **Navigate to frontend:**
    ```bash
    cd frontend
+   ```
+
+2. **Install dependencies:**
+   ```bash
    npm install
+   ```
+
+3. **Start development server:**
+   ```bash
    npm run dev
    ```
 
-2. Open **http://localhost:3000** in your browser
+4. **Open browser:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
 
-## API Endpoints
+## 📜 NPM Scripts
 
-| Method | Endpoint         | Description              |
-| ------ | ---------------- | ------------------------ |
-| GET    | `/api/test-db`   | Test database connection |
-| GET    | `/api/items`     | Get all items            |
-| GET    | `/api/items/:id` | Get single item          |
-| POST   | `/api/items`     | Create new item          |
-| PUT    | `/api/items/:id` | Update item              |
-| DELETE | `/api/items/:id` | Delete item              |
+### Backend
 
-## Troubleshooting
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start with nodemon (auto-reload) |
+| `npm start` | Start production server |
+| `npm run db:schema` | Apply database schema |
+| `npm run db:seed` | Seed demo data |
+| `npm run db:test` | Test database connection |
+| `npm run admin:setup` | Create or manage admin users |
 
-- **"Cannot connect to backend server"** - Make sure the backend is running (`npm start` in backend folder)
-- **"Items table doesn't exist"** - Run `init.sql` in pgAdmin
-- **Database connection error** - Check your `.env` credentials match pgAdmin
+### Frontend
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the backend folder:
+
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your-password
+DB_NAME=switch4good
+DB_SSL=false              # Set to 'true' for cloud databases
+
+# Server
+PORT=5000
+NODE_ENV=development
+
+# Authentication
+JWT_SECRET=your-secret-key
+JWT_EXPIRY=24h
+```
+
+## 🔌 API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - User login
+- `GET /api/auth/verify` - Verify JWT token
+- `PATCH /api/auth/password` - Change password
+
+### Admin (requires admin role)
+- `GET /api/admin/users` - List all admin users
+- `POST /api/admin/users` - Create user
+- `PUT /api/admin/users/:id` - Update user
+- `DELETE /api/admin/users/:id` - Delete user
+
+### Core Resources
+- `/api/schools` - Schools CRUD
+- `/api/programs` - Programs CRUD
+- `/api/students` - Students CRUD
+- `/api/can-metrics` - CAN Metrics CRUD
+
+### Staging Tables
+- `/api/staging/program-course`
+- `/api/staging/student-tracker`
+- `/api/staging/can-metrics`
+- `/api/staging/program-directory`
+
+### V2 API (Normalized Schema)
+- `/api/v2/semesters`
+- `/api/v2/universities`
+- `/api/v2/programs`
+- `/api/v2/partnerships`
+- `/api/v2/dashboard` - Combined metrics
+
+## 👥 User Roles
+
+| Role | Permissions |
+|------|-------------|
+| `admin` | Full access, user management |
+| `staff` | Create, read, update, delete data |
+| `viewer` | Read-only access |
+
+## 🛠️ Development
+
+### Adding New Routes
+
+1. Create route file in `backend/src/routes/`
+2. Export router from the file
+3. Import and mount in `routes/index.js`
+
+### Adding API Services (Frontend)
+
+1. Add method to `frontend/src/services/api.js`
+2. Use with `useApi` hook or call directly
+
+## 📝 License
+
+Private - Switch4Good Internal Use Only

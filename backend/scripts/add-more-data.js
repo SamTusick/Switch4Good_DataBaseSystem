@@ -1,7 +1,7 @@
 /**
  * Add additional demo data: outreach contacts, events, deliverables
  */
-const pool = require('./db');
+const pool = require('../db');
 
 const firstNames = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Ethan', 'Sophia', 'Mason', 'Isabella', 'William', 'Mia', 'James', 'Charlotte', 'Benjamin'];
 const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
@@ -162,3 +162,4 @@ async function addMoreData() {
 }
 
 addMoreData().catch(console.error);
+

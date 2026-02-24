@@ -1,5 +1,5 @@
 // Quick script to add participation records
-const pool = require('./db');
+const pool = require('../db');
 
 async function run() {
   try {
@@ -92,3 +92,4 @@ async function run() {
 }
 
 run();
+

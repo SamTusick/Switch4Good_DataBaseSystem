@@ -15,7 +15,7 @@
  * - student_registration: id, student_id, project_id, s4g_staff_id, status, etc.
  */
 
-const pool = require('./db');
+const pool = require('../db');
 
 // Sample data arrays
 const firstNames = [
@@ -578,3 +578,4 @@ async function seedData() {
 
 // Run the seed
 seedData();
+

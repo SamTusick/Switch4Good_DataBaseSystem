@@ -11,7 +11,7 @@
  *   node setup-admin.js init  (creates default admin if no users exist)
  */
 
-const pool = require("./db");
+const pool = require("../db");
 const bcrypt = require("bcryptjs");
 const readline = require("readline");
 
@@ -333,3 +333,5 @@ async function main() {
 }
 
 main();
+
+

@@ -1,11 +1,19 @@
 {
-  "name": "backend",
+  "name": "switch4good-backend",
   "version": "1.0.0",
-  "description": "Express API server with PostgreSQL connection",
-  "main": "server.js",
+  "description": "Switch4Good Database System - Express API with PostgreSQL",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "start:legacy": "node server.js",
+    "dev:legacy": "nodemon server.js",
+    "db:schema": "node scripts/run-schema.js",
+    "db:seed": "node scripts/seed-demo-data.js",
+    "db:seed-legacy": "node scripts/seed-legacy-data.js",
+    "db:test": "node scripts/test-db.js",
+    "admin:setup": "node scripts/setup-admin.js",
+    "admin:init": "node scripts/init-admin-table.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

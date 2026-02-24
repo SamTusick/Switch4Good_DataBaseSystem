@@ -1,13 +1,13 @@
 /**
  * Run the complete schema SQL file
  */
-const pool = require('./db');
+const pool = require('../db');
 const fs = require('fs');
 
 async function runSchema() {
     try {
         console.log('Reading schema file...');
-        const schema = fs.readFileSync('./schema-complete.sql', 'utf8');
+        const schema = fs.readFileSync('../sql/schema-complete.sql', 'utf8');
         
         console.log('Executing schema (this may take a moment)...');
         await pool.query(schema);
@@ -60,3 +60,4 @@ async function runSchema() {
 }
 
 runSchema();
+
