@@ -4,7 +4,7 @@
  */
 
 // API base URL - can be configured via environment variable
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+export const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 /**
  * Get authorization headers for API calls
@@ -28,12 +28,14 @@ export const apiRequest = async (endpoint, options = {}) => {
   };
 
   const response = await fetch(url, config);
-  
+
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: "Request failed" }));
+    const error = await response
+      .json()
+      .catch(() => ({ error: "Request failed" }));
     throw new Error(error.error || error.message || "API request failed");
   }
-  
+
   return response.json();
 };
 
@@ -68,7 +70,10 @@ export const api = {
     create: (data) =>
       apiRequest("/schools", { method: "POST", body: JSON.stringify(data) }),
     update: (id, data) =>
-      apiRequest(`/schools/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+      apiRequest(`/schools/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
     delete: (id) => apiRequest(`/schools/${id}`, { method: "DELETE" }),
   },
 
@@ -79,7 +84,10 @@ export const api = {
     create: (data) =>
       apiRequest("/programs", { method: "POST", body: JSON.stringify(data) }),
     update: (id, data) =>
-      apiRequest(`/programs/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+      apiRequest(`/programs/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
     delete: (id) => apiRequest(`/programs/${id}`, { method: "DELETE" }),
   },
 
@@ -90,19 +98,29 @@ export const api = {
     create: (data) =>
       apiRequest("/students", { method: "POST", body: JSON.stringify(data) }),
     update: (id, data) =>
-      apiRequest(`/students/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+      apiRequest(`/students/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
     delete: (id) => apiRequest(`/students/${id}`, { method: "DELETE" }),
     getHours: (participationId) => apiRequest(`/hours/${participationId}`),
-    getChecklist: (participationId) => apiRequest(`/checklist/${participationId}`),
+    getChecklist: (participationId) =>
+      apiRequest(`/checklist/${participationId}`),
   },
 
   // CAN Metrics
   canMetrics: {
     getAll: () => apiRequest("/can-metrics"),
     create: (data) =>
-      apiRequest("/can-metrics", { method: "POST", body: JSON.stringify(data) }),
+      apiRequest("/can-metrics", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
     update: (id, data) =>
-      apiRequest(`/can-metrics/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+      apiRequest(`/can-metrics/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
     delete: (id) => apiRequest(`/can-metrics/${id}`, { method: "DELETE" }),
   },
 
@@ -111,26 +129,42 @@ export const api = {
     programCourse: {
       getAll: () => apiRequest("/staging/program-course"),
       create: (data) =>
-        apiRequest("/staging/program-course", { method: "POST", body: JSON.stringify(data) }),
-      delete: (id) => apiRequest(`/staging/program-course/${id}`, { method: "DELETE" }),
+        apiRequest("/staging/program-course", {
+          method: "POST",
+          body: JSON.stringify(data),
+        }),
+      delete: (id) =>
+        apiRequest(`/staging/program-course/${id}`, { method: "DELETE" }),
     },
     studentTracker: {
       getAll: () => apiRequest("/staging/student-tracker"),
       create: (data) =>
-        apiRequest("/staging/student-tracker", { method: "POST", body: JSON.stringify(data) }),
-      delete: (id) => apiRequest(`/staging/student-tracker/${id}`, { method: "DELETE" }),
+        apiRequest("/staging/student-tracker", {
+          method: "POST",
+          body: JSON.stringify(data),
+        }),
+      delete: (id) =>
+        apiRequest(`/staging/student-tracker/${id}`, { method: "DELETE" }),
     },
     canMetrics: {
       getAll: () => apiRequest("/staging/can-metrics"),
       create: (data) =>
-        apiRequest("/staging/can-metrics", { method: "POST", body: JSON.stringify(data) }),
-      delete: (id) => apiRequest(`/staging/can-metrics/${id}`, { method: "DELETE" }),
+        apiRequest("/staging/can-metrics", {
+          method: "POST",
+          body: JSON.stringify(data),
+        }),
+      delete: (id) =>
+        apiRequest(`/staging/can-metrics/${id}`, { method: "DELETE" }),
     },
     programDirectory: {
       getAll: () => apiRequest("/staging/program-directory"),
       create: (data) =>
-        apiRequest("/staging/program-directory", { method: "POST", body: JSON.stringify(data) }),
-      delete: (id) => apiRequest(`/staging/program-directory/${id}`, { method: "DELETE" }),
+        apiRequest("/staging/program-directory", {
+          method: "POST",
+          body: JSON.stringify(data),
+        }),
+      delete: (id) =>
+        apiRequest(`/staging/program-directory/${id}`, { method: "DELETE" }),
     },
   },
 
@@ -141,13 +175,13 @@ export const api = {
       const formData = new FormData();
       formData.append("file", file);
       if (targetTable) formData.append("targetTable", targetTable);
-      
+
       const response = await fetch(`${API_URL}/upload/preview`, {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: formData,
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || "Preview failed");
@@ -158,13 +192,13 @@ export const api = {
       const formData = new FormData();
       formData.append("file", file);
       if (targetTable) formData.append("targetTable", targetTable);
-      
+
       const response = await fetch(`${API_URL}/upload/import`, {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: formData,
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || "Import failed");
@@ -177,16 +211,23 @@ export const api = {
   admin: {
     getUsers: () => apiRequest("/admin/users"),
     createUser: (data) =>
-      apiRequest("/admin/users", { method: "POST", body: JSON.stringify(data) }),
+      apiRequest("/admin/users", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
     updateUser: (id, data) =>
-      apiRequest(`/admin/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+      apiRequest(`/admin/users/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
     deleteUser: (id) => apiRequest(`/admin/users/${id}`, { method: "DELETE" }),
     resetPassword: (id, newPassword) =>
       apiRequest(`/admin/users/${id}/password`, {
         method: "PATCH",
         body: JSON.stringify({ newPassword }),
       }),
-    unlockUser: (id) => apiRequest(`/admin/users/${id}/unlock`, { method: "PATCH" }),
+    unlockUser: (id) =>
+      apiRequest(`/admin/users/${id}/unlock`, { method: "PATCH" }),
   },
 
   // V2 API (normalized schema)
