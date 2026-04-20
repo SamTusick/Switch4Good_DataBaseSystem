@@ -106,7 +106,7 @@ router.get("/program-directory", authenticate, async (req, res) => {
         p.website,
         p.program_type,
         sch.school_name as school,
-        sem.season || ' ' || sem.year as semester,
+        sem.season || ' ' || sem.year::text as semester,
         psa.is_active,
         psa.most_recent_contact_date,
         sc.full_name as sg4_staff_contact,
@@ -118,7 +118,7 @@ router.get("/program-directory", authenticate, async (req, res) => {
       LEFT JOIN schools sch ON p.school_id = sch.school_id
       LEFT JOIN semesters sem ON psa.semester_id = sem.semester_id
       LEFT JOIN staff_contacts sc ON psa.sg4_staff_contact_id = sc.staff_id
-      ORDER BY sem.year DESC, sem.season, p.program_name
+      ORDER BY sem.year DESC, sem.season, p.program_id
     `);
     res.json(result.rows);
   } catch (err) {
@@ -141,7 +141,7 @@ router.get("/student-tracker", authenticate, async (req, res) => {
         p.program_name as program,
         sch.school_name as school,
         sc.full_name as sg4_staff,
-        sem.season || ' ' || sem.year as semester,
+        sem.season || ' ' || sem.year::text as semester,
         sp.project_name as project,
         sp.project_start_date,
         sp.project_end_date,
