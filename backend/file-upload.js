@@ -52,253 +52,120 @@ const upload = multer({
  * Maps Excel/CSV column headers to database columns
  */
 const TABLE_MAPPINGS = {
-  // Universities table
-  universities: {
+  // Schools table
+  schools: {
     identifyColumns: ['school', 'university', 'institution', 'college'],
-    requiredColumns: ['name'],
+    requiredColumns: ['school_name'],
+    primaryKey: 'school_id',
     columnMap: {
-      'school': 'name',
-      'university': 'name',
-      'university name': 'name',
-      'institution': 'name',
-      'college': 'name',
-      'name': 'name',
-      'abbreviation': 'abbreviation',
-      'abbrev': 'abbreviation',
-      'city': 'city',
-      'state': 'state',
-      'website': 'website',
-      'url': 'website',
-      'contact name': 'primary_contact_name',
-      'primary contact': 'primary_contact_name',
-      'contact email': 'primary_contact_email',
-      'contact phone': 'primary_contact_phone',
-      'notes': 'notes',
-      'partnership start': 'partnership_start_date',
-      'start date': 'partnership_start_date'
+      'school': 'school_name',
+      'school name': 'school_name',
+      'university': 'school_name',
+      'university name': 'school_name',
+      'institution': 'school_name',
+      'college': 'school_name',
+      'name': 'school_name'
     },
-    tableName: 'university'
-  },
-
-  // Semesters table
-  semesters: {
-    identifyColumns: ['semester', 'term', 'academic year'],
-    requiredColumns: ['name', 'start_date', 'end_date'],
-    columnMap: {
-      'semester': 'name',
-      'term': 'name',
-      'name': 'name',
-      'academic year': 'academic_year',
-      'year': 'academic_year',
-      'start date': 'start_date',
-      'start': 'start_date',
-      'begins': 'start_date',
-      'end date': 'end_date',
-      'end': 'end_date',
-      'ends': 'end_date',
-      'current': 'is_current',
-      'is current': 'is_current'
-    },
-    tableName: 'semester'
-  },
-
-  // S4G Staff table
-  staff: {
-    identifyColumns: ['s4g staff', 'staff name', 'staff member', 'coordinator'],
-    requiredColumns: ['name'],
-    columnMap: {
-      's4g staff': 'name',
-      'staff name': 'name',
-      'staff member': 'name',
-      'staff': 'name',
-      'coordinator': 'name',
-      'name': 'name',
-      'email': 'email',
-      'staff email': 'email',
-      'phone': 'phone',
-      'role': 'role',
-      'position': 'role',
-      'title': 'role',
-      'active': 'is_active',
-      'is active': 'is_active'
-    },
-    tableName: 's4g_staff'
+    tableName: 'schools',
+    uniqueConstraint: 'school_name'
   },
 
   // Programs table
   programs: {
     identifyColumns: ['program', 'program name', 'program type'],
-    requiredColumns: ['name', 'university'],
+    requiredColumns: ['program_name'],
+    primaryKey: 'program_id',
     columnMap: {
-      'program': 'name',
-      'program name': 'name',
-      'name': 'name',
-      'school': 'university',
-      'university': 'university',
+      'program': 'program_name',
+      'program name': 'program_name',
+      'name': 'program_name',
+      'school': 'school_name',
+      'university': 'school_name',
+      'website': 'website',
+      'url': 'website',
       'type': 'program_type',
       'program type': 'program_type',
-      'department': 'department',
-      'dept': 'department',
-      'description': 'description',
-      's4g staff': 'staff_name',
-      'staff': 'staff_name',
-      'coordinator': 'staff_name',
-      'active': 'is_active'
+      'needs formalization': 'needs_formalization',
+      'needs_formalization': 'needs_formalization',
+      'notes': 'notes'
     },
-    tableName: 'program',
+    tableName: 'programs',
     lookupFields: {
-      'university': { table: 'university', column: 'name', fk: 'university_id' },
-      'staff_name': { table: 's4g_staff', column: 'name', fk: 's4g_staff_id' }
+      'school_name': { table: 'schools', column: 'school_name', fk: 'school_id', pk: 'school_id' }
     }
   },
 
-  // Courses table
-  courses: {
-    identifyColumns: ['course', 'course code', 'course name', 'class'],
-    requiredColumns: ['course_name', 'program'],
-    columnMap: {
-      'course code': 'course_code',
-      'code': 'course_code',
-      'course number': 'course_code',
-      'course': 'course_name',
-      'course name': 'course_name',
-      'class': 'course_name',
-      'class name': 'course_name',
-      'program': 'program',
-      'faculty': 'faculty_names',
-      'instructor': 'faculty_names',
-      'professor': 'faculty_names',
-      'teacher': 'faculty_names',
-      'schedule': 'schedule',
-      'time': 'schedule',
-      'meeting time': 'schedule',
-      'description': 'description',
-      'credits': 'credits',
-      'credit hours': 'credits',
-      'dairy content': 'includes_dairy_content',
-      'includes dairy': 'includes_dairy_content',
-      'dairy': 'includes_dairy_content'
-    },
-    tableName: 'course',
-    lookupFields: {
-      'program': { table: 'program', column: 'name', fk: 'program_id' }
-    }
-  },
-
-  // Students table (PII)
+  // Students table
   students: {
-    identifyColumns: ['student', 'student name', 'first name', 'last name', 'pronouns', 't-shirt'],
-    requiredColumns: ['first_name', 'last_name'],
+    identifyColumns: ['student', 'student name', 'full name', 'pronouns', 't-shirt', 'areas of interest'],
+    requiredColumns: ['full_name'],
+    primaryKey: 'student_id',
     columnMap: {
       'name': 'full_name',
+      'full name': 'full_name',
       'student name': 'full_name',
       'student': 'full_name',
-      'first name': 'first_name',
-      'first': 'first_name',
-      'last name': 'last_name',
-      'last': 'last_name',
       'email': 'email',
+      'email address': 'email',
       'student email': 'email',
-      'phone': 'phone',
       'pronouns': 'pronouns',
       't-shirt': 'tshirt_size',
       't-shirt size': 'tshirt_size',
       'tshirt': 'tshirt_size',
       'shirt size': 'tshirt_size',
+      'tshirt size': 'tshirt_size',
       'year': 'year_in_school',
       'year in school': 'year_in_school',
       'class year': 'year_in_school',
       'grade': 'year_in_school',
-      'major': 'major',
       'areas of interest': 'areas_of_interest',
       'interests': 'areas_of_interest'
     },
-    tableName: 'student_pii'
+    tableName: 'students',
+    uniqueConstraint: 'email'
   },
 
-  // Partnerships table (Service Learning Programs)
-  partnerships: {
-    identifyColumns: ['students participating', 'total students', 'status', 'ty note'],
-    requiredColumns: ['program', 'semester'],
+  // CAN Metrics table
+  can_metrics: {
+    identifyColumns: ['impression', 'touchpoints', 'engagements', 'conversions', 'can metric'],
+    requiredColumns: ['impression'],
+    primaryKey: 'metric_id',
     columnMap: {
-      'semester': 'semester',
-      'term': 'semester',
-      'school': 'university',
-      'university': 'university',
-      'program': 'program',
-      'program name': 'program',
-      'course': 'course',
-      'students participating': 'students_participating',
-      'participating': 'students_participating',
-      'student count': 'students_participating',
-      'total students': 'total_in_class',
-      'total in class': 'total_in_class',
-      'class size': 'total_in_class',
-      'status': 'status',
-      'partnership status': 'status',
-      'ty note sent': 'ty_note_sent',
-      'ty note': 'ty_note_sent',
-      'thank you': 'ty_note_sent',
-      'notes': 'notes',
-      'next steps': 'next_steps',
-      'follow up': 'next_steps'
+      'date': 'metric_date',
+      'metric date': 'metric_date',
+      'is ongoing': 'is_ongoing',
+      'ongoing': 'is_ongoing',
+      'impression': 'impression',
+      'touchpoints': 'touchpoints',
+      'engagements': 'engagements',
+      'conversions': 'conversions',
+      'notes': 'notes'
     },
-    tableName: 'partnership',
-    lookupFields: {
-      'semester': { table: 'semester', column: 'name', fk: 'semester_id' },
-      'program': { table: 'program', column: 'name', fk: 'program_id' },
-      'course': { table: 'course', column: 'course_name', fk: 'course_id' }
-    }
+    tableName: 'can_metrics'
   },
 
-  // Projects table
-  projects: {
-    identifyColumns: ['project', 'project name', 'project type', 'deliverable'],
-    requiredColumns: ['name', 'partnership'],
+  // Staff contacts table
+  staff_contacts: {
+    identifyColumns: ['staff', 'staff name', 'coordinator', 'sg4 staff', 'role title'],
+    requiredColumns: ['full_name'],
+    primaryKey: 'staff_id',
     columnMap: {
-      'project': 'name',
-      'project name': 'name',
-      'name': 'name',
-      'type': 'project_type',
-      'project type': 'project_type',
-      'description': 'description',
-      'start date': 'start_date',
-      'start': 'start_date',
-      'end date': 'end_date',
-      'end': 'end_date',
-      'max students': 'max_students',
-      'capacity': 'max_students',
-      'deliverable': 'deliverable_description',
-      'success metric': 'deliverable_description',
-      'partnership': 'partnership'
+      'name': 'full_name',
+      'full name': 'full_name',
+      'staff name': 'full_name',
+      'staff': 'full_name',
+      'sg4 staff': 'full_name',
+      'coordinator': 'full_name',
+      'email': 'email',
+      'staff email': 'email',
+      'role': 'role_title',
+      'role title': 'role_title',
+      'position': 'role_title',
+      'title': 'role_title',
+      'organization': 'organization',
+      'notes': 'notes'
     },
-    tableName: 'project'
-  },
-
-  // Outreach contacts
-  outreach_contacts: {
-    identifyColumns: ['outreach', 'touchpoint', 'engagement', 'conversion', 'contact role'],
-    requiredColumns: ['contact_name', 'university'],
-    columnMap: {
-      'contact': 'contact_name',
-      'contact name': 'contact_name',
-      'name': 'contact_name',
-      'email': 'contact_email',
-      'contact email': 'contact_email',
-      'phone': 'contact_phone',
-      'role': 'contact_role',
-      'contact role': 'contact_role',
-      'position': 'contact_role',
-      'title': 'contact_role',
-      'department': 'department',
-      'notes': 'notes',
-      'school': 'university',
-      'university': 'university'
-    },
-    tableName: 'outreach_contact',
-    lookupFields: {
-      'university': { table: 'university', column: 'name', fk: 'university_id' }
-    }
+    tableName: 'staff_contacts'
   }
 };
 
@@ -470,12 +337,12 @@ function cleanValue(value, columnName) {
 /**
  * Look up foreign key ID from related table
  */
-async function lookupForeignKey(table, column, value) {
+async function lookupForeignKey(table, column, value, pk) {
   if (!value) return null;
   
   try {
     const result = await pool.query(
-      `SELECT id FROM ${table} WHERE LOWER(${column}) = LOWER($1)`,
+      `SELECT ${pk} as id FROM ${table} WHERE LOWER(${column}) = LOWER($1)`,
       [String(value).trim()]
     );
     return result.rows.length > 0 ? result.rows[0].id : null;
@@ -516,7 +383,7 @@ async function importToDatabase(data, tableKey, userId) {
       if (mapping.lookupFields) {
         for (const [field, config] of Object.entries(mapping.lookupFields)) {
           if (dbRow[field]) {
-            const fkId = await lookupForeignKey(config.table, config.column, dbRow[field]);
+            const fkId = await lookupForeignKey(config.table, config.column, dbRow[field], config.pk);
             if (fkId) {
               dbRow[config.fk] = fkId;
             } else {
@@ -529,14 +396,6 @@ async function importToDatabase(data, tableKey, userId) {
             delete dbRow[field];
           }
         }
-      }
-      
-      // Handle full_name splitting for students
-      if (tableKey === 'students' && dbRow.full_name && !dbRow.first_name) {
-        const nameParts = dbRow.full_name.split(' ');
-        dbRow.first_name = nameParts[0] || 'Unknown';
-        dbRow.last_name = nameParts.slice(1).join(' ') || 'Unknown';
-        delete dbRow.full_name;
       }
       
       // Build dynamic INSERT query
@@ -553,29 +412,22 @@ async function importToDatabase(data, tableKey, userId) {
       let query = `INSERT INTO ${mapping.tableName} (${columns.join(', ')}) VALUES (${placeholders.join(', ')})`;
       
       // Add conflict handling for tables with unique constraints
-      const uniqueConstraints = {
-        'university': 'name',
-        'semester': 'name',
-        's4g_staff': 'email',
-        'student_pii': 'email'
-      };
-      
-      if (uniqueConstraints[mapping.tableName]) {
-        const uniqueCol = uniqueConstraints[mapping.tableName];
-        if (columns.includes(uniqueCol)) {
+      if (mapping.uniqueConstraint && columns.includes(mapping.uniqueConstraint)) {
+        const uniqueCol = mapping.uniqueConstraint;
+        const updateCols = columns.filter(c => c !== uniqueCol);
+        if (updateCols.length > 0) {
           query += ` ON CONFLICT (${uniqueCol}) DO UPDATE SET `;
-          query += columns
-            .filter(c => c !== uniqueCol)
-            .map(c => `${c} = EXCLUDED.${c}`)
-            .join(', ');
+          query += updateCols.map(c => `${c} = EXCLUDED.${c}`).join(', ');
+        } else {
+          query += ` ON CONFLICT (${uniqueCol}) DO NOTHING`;
         }
       }
       
-      query += ' RETURNING id';
+      query += ` RETURNING ${mapping.primaryKey}`;
       
       const result = await pool.query(query, values);
       results.success++;
-      results.created.push({ id: result.rows[0].id, row: rowNum });
+      results.created.push({ id: result.rows[0][mapping.primaryKey], row: rowNum });
       
     } catch (err) {
       results.errors.push({
