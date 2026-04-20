@@ -101,7 +101,7 @@ router.get("/program-directory", authenticate, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
-        psa.activity_id as id,
+        (psa.program_id || '-' || psa.semester_id) as id,
         p.program_name as program,
         p.website,
         p.program_type,
