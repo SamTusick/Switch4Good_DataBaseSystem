@@ -12,7 +12,7 @@ router.get("/can-metrics", async (req, res) => {
     const result = await pool.query(`
       SELECT metric_id as id, metric_date as date, is_ongoing, impression,
              touchpoints, engagements, conversions, notes
-      FROM can_metrics ORDER BY metric_date DESC NULLS LAST
+      FROM can_metrics ORDER BY metric_id
     `);
     res.json(result.rows);
   } catch (err) {

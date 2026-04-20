@@ -11,7 +11,7 @@ router.use(authenticate);
  */
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM schools ORDER BY school_name");
+    const result = await pool.query("SELECT * FROM schools ORDER BY school_id");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
