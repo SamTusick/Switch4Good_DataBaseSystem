@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
         p.notes
       FROM programs p
       LEFT JOIN schools s ON p.school_id = s.school_id
-      ORDER BY p.program_name
+      ORDER BY p.program_id
     `);
     res.json(result.rows);
   } catch (err) {
